@@ -1,0 +1,76 @@
+<style>.currentCategory{color:#004cb8; font-weight:bold;}</style>
+<!-- -->
+<div id="leftNavContainer" name="leftNavContainer">
+<?php
+$_cat = $this->getCurrentCategory();
+$current_cat = (is_object($_cat) ? $_cat->getName() : '');
+$leftNav = '<ul id="leftNav" name="leftNav">';
+switch( $_cat -> getLevel() ){
+case '2':
+default:
+$leftNav .= '<li class="leftnav_title"><a href="'.$this -> getCategoryUrl($_cat).'" class="currentCategory">'.$_cat -> getName().'</li>';
+$_categories = $_cat->getChildrenCategories();
+$leftNav .= '<ul>';
+foreach( $_categories as $_category ){
+$leftNav .= '<li class="lefnavtwo"><a href="'.$this -> getCategoryUrl( $_category ).'" >'.$_category -> getName().'</a></li>';
+}
+$leftNav .= '</ul>';
+break;
+case '3':
+$_parent = $_cat -> getParentCategory();
+$leftNav .= '<li class="leftnav_title"><a href="'.$this -> getCategoryUrl($_parent).'">'.$_parent -> getName().'</a></li>';
+$_categories = $_parent -> getChildrenCategories();
+$leftNav .= '<ul>';
+foreach( $_categories as $_category ){
+$leftNav .= '<li class="lefnavtwo">';
+if( $current_cat == $_category->getName() ){
+$leftNav .= '<a class="currentCategory" href="'.$this -> getCategoryUrl( $_category ).'" >'.$_category -> getName().'</a>';
+$leftNav .= '<ul>';
+if( $_category -> hasChildren() ){
+$childCategoies = $_category -> getChildrenCategories();
+foreach( $childCategoies as $_ccategory ){
+$leftNav .= '<li class="lefnavthree"><a href="'.$this -> getCategoryUrl( $_ccategory ).'" >'.$_ccategory -> getName().'</a></li>';
+}
+}
+$leftNav .= '</ul>';
+}else{
+$leftNav .= '<a href="'.$this -> getCategoryUrl( $_category ).'" >'.$_category -> getName().'</a>';
+}
+$leftNav .= '</li>';
+}
+$leftNav .= '</ul>';
+break;
+case '4':
+$_parent = $_cat -> getParentCategory();
+$_pname = $_parent -> getName();
+$_pparent = $_parent -> getParentCategory();
+$leftNav .= '<li class="leftnav_title"><a href="'.$this->getCategoryUrl($_pparent).'">'.$_pparent -> getName().'</h3></li>';
+$_categories = $_pparent -> getChildrenCategories();
+$leftNav .= '<ul>';
+foreach( $_categories as $_category ){
+$leftNav .= '<li class="lefnavtwo">';
+$leftNav .= '<a href="'.$this -> getCategoryUrl( $_category ).'" >'.$_category -> getName().'</a>';
+if( $_pname == $_category->getName() ){
+$_categories = $_category -> getChildrenCategories();
+$leftNav .= '<ul>';
+foreach( $_categories as $_ccategory ){
+$leftNav .= '<li class="lefnavthree">';
+if( $current_cat == $_ccategory -> getName() ){
+$leftNav .= '<a class="currentCategory" href="'.$this -> getCategoryUrl( $_ccategory ).'" >'.$_ccategory -> getName().'</a>';
+}else{
+$leftNav .= '<a href="'.$this -> getCategoryUrl( $_ccategory ).'" >'.$_ccategory -> getName().'</a>';
+}
+$leftNav .= '</li>';
+}
+$leftNav .= '</ul>';
+}
+$leftNav .= '</li>';
+}
+$leftNav .= '</ul>';
+break;
+}
+$leftNav .= '</ul>';
+echo $leftNav;
+?>
+</div>
+<!-- -->
